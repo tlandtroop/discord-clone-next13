@@ -1,11 +1,11 @@
-datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
-}
-
 generator client {
   provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Profile {
@@ -14,11 +14,9 @@ model Profile {
   name String
   imageUrl String @db.Text
   email String @db.Text
-
   servers Server[]
   members Member[]
   channels Channel[]
-  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -28,16 +26,12 @@ model Server {
   name String
   imageUrl String @db.Text
   inviteCode String @db.Text
-
   profileId String
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
   members Member[]
   channels Channel[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   @@index([profileId])
 }
 
@@ -50,16 +44,12 @@ enum MemberRole {
 model Member {
   id String @id @default(uuid())
   role MemberRole @default(GUEST)
-
   profileId String
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
   serverId String
   server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   @@index([profileId])
   @@index([serverId])
 }
@@ -74,16 +64,12 @@ model Channel {
   id String @id @default(uuid())
   name String
   type ChannelType @default(TEXT)
-
   profileId String
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
   serverId String
   server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   @@index([profileId])
   @@index([serverId])
 }
